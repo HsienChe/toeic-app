@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOEIC Pro 英文單字學習</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0C447C;--navy-dark:#042C53;--navy-mid:#185FA5;--navy-light:#85B7EB;
+  --teal:#1D9E75;--teal-light:#E1F5EE;--teal-mid:#5DCAA5;
+  --amber:#EF9F27;--amber-light:#FAEEDA;
+  --red:#E24B4A;--red-light:#FCEBEB;
+  --green:#639922;--green-light:#EAF3DE;
+  --gray-50:#F1EFE8;--gray-100:#D3D1C7;--gray-400:#888780;--gray-600:#5F5E5A;--gray-800:#2C2C2A;
+  --bg:#f0f4f8;--card:#fff;
+  --font-main:'Noto Sans TC',sans-serif;
+  --font-en:'Space Grotesk',sans-serif;
+}
+body{font-family:var(--font-main);background:var(--bg);color:var(--gray-800);min-height:100vh;font-size:14px}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--card);box-shadow:0 0 40px rgba(0,0,0,0.08)}
+
+/* LOGIN SCREEN */
+.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:linear-gradient(160deg,var(--navy-dark) 0%,var(--navy) 60%,var(--teal) 100%)}
+.login-logo{font-family:var(--font-en);font-size:42px;font-weight:700;color:#fff;letter-spacing:-2px;margin-bottom:8px}
+.login-logo span{color:var(--teal-mid)}
+.login-tagline{font-size:14px;color:var(--navy-light);margin-bottom:48px;text-align:center;line-height:1.6}
+.login-card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:28px 24px;width:100%;max-width:320px;text-align:center}
+.login-card h2{font-size:18px;color:#fff;margin-bottom:8px}
+.login-card p{font-size:13px;color:var(--navy-light);margin-bottom:24px;line-height:1.6}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:none;border-radius:12px;padding:13px 20px;width:100%;font-size:14px;font-family:var(--font-main);font-weight:500;cursor:pointer;color:var(--gray-800);transition:all .2s}
+.google-btn:hover{background:#f8f8f8;transform:translateY(-1px)}
+.google-btn svg{width:20px;height:20px;flex-shrink:0}
+.login-features{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.login-feature{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,0.7)}
+.login-feature-icon{width:28px;height:28px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* NAV */
+.nav-bar{background:var(--navy-dark);padding:0 16px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:var(--font-en);font-weight:700;font-size:15px;color:#fff;letter-spacing:-0.3px}
+.nav-logo span{color:var(--teal-mid)}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.streak-badge{display:flex;align-items:center;gap:4px;background:rgba(239,159,39,0.2);border:1px solid rgba(239,159,39,0.4);border-radius:20px;padding:3px 10px;font-size:12px;color:var(--amber);font-family:var(--font-en);font-weight:500}
+.user-avatar{width:30px;height:30px;border-radius:50%;border:2px solid var(--teal-mid);cursor:pointer;object-fit:cover}
+.user-avatar-placeholder{width:30px;height:30px;border-radius:50%;border:2px solid var(--teal-mid);background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
+
+/* BOTTOM TAB */
+.tab-bar{background:var(--card);border-top:1px solid #e8ecf0;display:flex;position:sticky;bottom:0;z-index:100}
+.tab-btn{flex:1;padding:10px 4px 8px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--gray-400);font-family:var(--font-main);transition:color .2s}
+.tab-btn.active{color:var(--navy)}
+.tab-btn svg{width:22px;height:22px}
+
+/* CONTENT */
+.page{display:none;flex:1;overflow-y:auto;padding-bottom:16px}
+.page.active{display:block}
+
+/* HOME */
+.home-header{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%);padding:20px 16px 28px;color:#fff}
+.greeting{font-size:12px;color:var(--navy-light);margin-bottom:4px}
+.user-title{font-size:18px;font-weight:700;margin-bottom:16px}
+.user-title span{color:var(--teal-mid)}
+.xp-bar-wrap{background:rgba(255,255,255,0.15);border-radius:8px;padding:12px 14px}
+.xp-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.level-badge{font-family:var(--font-en);font-weight:700;font-size:13px;background:var(--teal);color:#fff;padding:3px 10px;border-radius:20px}
+.xp-text{font-size:12px;color:var(--navy-light)}
+.xp-bar{background:rgba(255,255,255,0.2);border-radius:4px;height:8px;overflow:hidden}
+.xp-fill{background:var(--teal-mid);height:100%;border-radius:4px;transition:width .6s ease}
+
+.home-cards{padding:16px;display:flex;flex-direction:column;gap:12px}
+.sync-badge{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--teal);display:flex;align-items:center;gap:6px}
+
+.reward-card{background:linear-gradient(135deg,var(--amber-light),#fff);border:1px solid rgba(239,159,39,0.3);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.reward-icon{width:44px;height:44px;background:var(--amber);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.reward-text h3{font-size:14px;font-weight:700;color:#633806;margin-bottom:2px}
+.reward-text p{font-size:12px;color:#854F0B}
+.reward-btn{margin-left:auto;background:var(--amber);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-family:var(--font-main);cursor:pointer;font-weight:500;flex-shrink:0}
+.reward-btn:disabled{background:var(--gray-100);color:var(--gray-400);cursor:default}
+
+.progress-card{background:var(--card);border:1px solid #e8ecf0;border-radius:16px;padding:14px 16px}
+.progress-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.progress-card-top h3{font-size:14px;font-weight:700}
+.progress-pct{font-family:var(--font-en);font-weight:700;font-size:18px;color:var(--navy)}
+.progress-sections{display:flex;gap:8px}
+.progress-seg{flex:1;background:var(--gray-50);border-radius:8px;padding:8px 10px;text-align:center}
+.progress-seg .num{font-family:var(--font-en);font-weight:700;font-size:16px;color:var(--navy)}
+.progress-seg .lbl{font-size:10px;color:var(--gray-400);margin-top:2px}
+
+/* MAP */
+.map-container{padding:16px}
+.map-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.map-sub{font-size:12px;color:var(--gray-400);margin-bottom:16px}
+.day-row{margin-bottom:16px}
+.day-label{font-size:11px;font-weight:700;color:var(--gray-400);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;font-family:var(--font-en)}
+.stages{display:flex;gap:8px;flex-wrap:wrap}
+.stage{width:52px;height:52px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:500;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative}
+.stage.done{background:var(--teal-light);color:var(--teal);border-color:var(--teal-mid)}
+.stage.current{background:var(--navy);color:#fff;border-color:var(--navy-mid);box-shadow:0 4px 12px rgba(12,68,124,0.3)}
+.stage.locked{background:var(--gray-50);color:var(--gray-400);cursor:default}
+.stage span{font-size:20px;margin-bottom:1px}
+.stage .stage-num{font-size:9px;font-family:var(--font-en)}
+.path-connector{height:2px;background:var(--gray-100);border-radius:2px;margin:0 0 12px;position:relative}
+.path-connector .fill{height:100%;background:var(--teal-mid);border-radius:2px;transition:width .8s ease}
+
+/* CATEGORIES */
+.cat-grid{padding:16px}
+.section-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.section-sub{font-size:12px;color:var(--gray-400);margin-bottom:14px}
+.cat-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-card{background:var(--card);border:1px solid #e8ecf0;border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.cat-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.08);border-color:var(--navy-light)}
+.cat-card .cat-icon{font-size:26px;margin-bottom:8px}
+.cat-card h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.cat-card p{font-size:11px;color:var(--gray-400)}
+.cat-card .cat-prog{margin-top:8px;background:var(--gray-50);border-radius:4px;height:4px;overflow:hidden}
+.cat-card .cat-prog-fill{height:100%;background:var(--teal);border-radius:4px}
+
+/* STUDY */
+.study-header{background:var(--navy-dark);padding:16px;color:#fff}
+.study-header-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back-btn{background:rgba(255,255,255,0.1);border:none;border-radius:8px;padding:6px 10px;color:#fff;cursor:pointer;font-family:var(--font-main);font-size:13px}
+.study-cat-title{font-size:15px;font-weight:700}
+.study-progress{background:rgba(255,255,255,0.15);border-radius:6px;height:6px;overflow:hidden}
+.study-prog-fill{background:var(--teal-mid);height:100%;border-radius:6px;transition:width .4s}
+
+.flashcard-area{padding:16px}
+.card-count{font-size:12px;color:var(--gray-400);text-align:center;margin-bottom:12px;font-family:var(--font-en)}
+.flashcard{background:var(--card);border:1px solid #e8ecf0;border-radius:20px;padding:32px 24px;text-align:center;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;margin-bottom:16px}
+.flashcard:hover{box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+.flashcard .tag{font-size:10px;background:var(--teal-light);color:var(--teal);padding:3px 10px;border-radius:20px;margin-bottom:14px;font-family:var(--font-en)}
+.flashcard .word{font-family:var(--font-en);font-size:36px;font-weight:700;color:var(--navy-dark);margin-bottom:8px;letter-spacing:-1px}
+.flashcard .phonetic{font-size:13px;color:var(--gray-400);margin-bottom:16px}
+.flashcard .meaning{font-size:17px;font-weight:500;color:var(--gray-800);display:none}
+.flashcard .example{font-size:12px;color:var(--gray-400);margin-top:8px;line-height:1.6;display:none;font-style:italic}
+.flashcard .tap-hint{font-size:11px;color:var(--gray-100);margin-top:16px}
+.flashcard.flipped .meaning{display:block}
+.flashcard.flipped .example{display:block}
+.flashcard.flipped .tap-hint{display:none}
+.flashcard.flipped .phonetic{display:none}
+
+.rating-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.rating-btn{border:none;border-radius:12px;padding:10px 6px;cursor:pointer;font-size:12px;font-family:var(--font-main);font-weight:500;transition:all .2s}
+.rating-btn.no{background:var(--red-light);color:var(--red)}
+.rating-btn.so{background:var(--amber-light);color:#854F0B}
+.rating-btn.yes{background:var(--green-light);color:var(--green)}
+.rating-btn:hover{opacity:.85;transform:scale(0.97)}
+.rating-btns-label{font-size:11px;color:var(--gray-400);text-align:center;margin-bottom:8px}
+
+/* QUIZ */
+.quiz-header{background:var(--navy-dark);padding:16px;color:#fff}
+.quiz-q-num{font-size:11px;color:var(--navy-light);margin-bottom:4px;font-family:var(--font-en)}
+.quiz-word{font-family:var(--font-en);font-size:32px;font-weight:700;margin-bottom:4px;letter-spacing:-1px}
+.quiz-phonetic{font-size:13px;color:var(--navy-light)}
+.quiz-options{padding:16px;display:flex;flex-direction:column;gap:10px}
+.quiz-opt{background:var(--card);border:1.5px solid #e8ecf0;border-radius:14px;padding:14px 16px;cursor:pointer;font-size:14px;transition:all .2s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover{border-color:var(--navy-light)}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.quiz-opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.quiz-opt .opt-letter{width:26px;height:26px;border-radius:8px;background:var(--gray-50);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--font-en);flex-shrink:0}
+.quiz-feedback{padding:0 16px 16px;display:none}
+.quiz-feedback-card{border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.6}
+.quiz-feedback-card.correct{background:var(--green-light);color:#27500A}
+.quiz-feedback-card.wrong{background:var(--red-light);color:#791F1F}
+.quiz-next-btn{width:calc(100% - 32px);margin:0 16px;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-family:var(--font-main);cursor:pointer;font-weight:500}
+
+/* REVIEW */
+.review-container{padding:16px}
+.review-empty{text-align:center;padding:48px 24px;color:var(--gray-400)}
+.review-empty span{font-size:48px;margin-bottom:12px;display:block}
+.review-word-card{background:var(--card);border:1px solid #e8ecf0;border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.review-word-card .rw-word{font-family:var(--font-en);font-size:16px;font-weight:700;color:var(--navy-dark)}
+.review-word-card .rw-meaning{font-size:13px;color:var(--gray-600);margin-top:2px}
+.review-word-card .rw-count{margin-left:auto;background:var(--red-light);color:var(--red);border-radius:8px;padding:3px 8px;font-size:11px;font-family:var(--font-en);font-weight:700;flex-shrink:0;cursor:pointer}
+
+/* SETTINGS */
+.settings-container{padding:16px}
+.settings-section{margin-bottom:20px}
+.settings-section h3{font-size:13px;font-weight:700;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;font-family:var(--font-en)}
+.settings-card{background:var(--card);border:1px solid #e8ecf0;border-radius:14px;overflow:hidden}
+.settings-row{padding:13px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f0f4f8}
+.settings-row:last-child{border-bottom:none}
+.settings-row .sr-icon{font-size:18px;width:22px;text-align:center}
+.settings-row .sr-label{flex:1;font-size:14px}
+.settings-input{border:1px solid #e8ecf0;border-radius:8px;padding:6px 10px;font-size:14px;font-family:var(--font-main);width:120px;text-align:center}
+
+/* ADD WORD */
+.add-word-form{background:var(--card);border:1px solid #e8ecf0;border-radius:16px;padding:16px;margin-bottom:16px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;font-weight:500;color:var(--gray-600);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid #e8ecf0;border-radius:8px;padding:9px 12px;font-size:14px;font-family:var(--font-main);outline:none;transition:border .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--navy-light)}
+.form-group textarea{resize:vertical;min-height:64px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.submit-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-main);cursor:pointer;font-weight:500;margin-top:4px}
+
+/* TITLES */
+.titles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.title-card{border-radius:14px;padding:12px;text-align:center;border:2px solid transparent}
+.title-card.unlocked{background:var(--teal-light);border-color:var(--teal-mid)}
+.title-card.locked{background:var(--gray-50);opacity:.5}
+.title-card .t-icon{font-size:24px;margin-bottom:6px}
+.title-card .t-name{font-size:12px;font-weight:700;color:var(--navy-dark)}
+.title-card .t-req{font-size:10px;color:var(--gray-400);margin-top:2px}
+
+/* LOGOUT BTN */
+.logout-btn{width:100%;background:var(--red-light);color:var(--red);border:none;border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-main);cursor:pointer;font-weight:500}
+
+/* RESULT */
+.result-screen{padding:24px 16px;text-align:center}
+.result-icon{font-size:56px;margin-bottom:12px}
+.result-title{font-size:22px;font-weight:700;color:var(--navy-dark);margin-bottom:6px}
+.result-sub{font-size:14px;color:var(--gray-400);margin-bottom:24px}
+.result-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px}
+.result-stat{background:var(--gray-50);border-radius:12px;padding:12px 8px;text-align:center}
+.result-stat .rs-num{font-family:var(--font-en);font-size:20px;font-weight:700;color:var(--navy)}
+.result-stat .rs-lbl{font-size:11px;color:var(--gray-400);margin-top:2px}
+.result-btn{background:var(--navy);color:#fff;border:none;border-radius:12px;padding:13px 32px;font-size:14px;font-family:var(--font-main);cursor:pointer;font-weight:500;margin:4px}
+.result-btn.secondary{background:var(--gray-50);color:var(--gray-800)}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gray-800);color:#fff;padding:10px 18px;border-radius:24px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:12px}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--gray-100);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div style="font-size:13px;color:var(--gray-400)">載入中...</div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="login-screen" style="display:none">
+  <div class="login-logo">TOEIC<span>Pro</span></div>
+  <div class="login-tagline">新制多益單字學習<br>遊戲化・跨裝置同步</div>
+  <div class="login-card">
+    <h2>開始學習</h2>
+    <p>使用 Google 帳號登入<br>資料自動同步到所有裝置</p>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      使用 Google 登入
+    </button>
+    <div class="login-features">
+      <div class="login-feature"><div class="login-feature-icon">🎮</div><span>遊戲化升級系統與稱號</span></div>
+      <div class="login-feature"><div class="login-feature-icon">☁️</div><span>手機電腦自動同步</span></div>
+      <div class="login-feature"><div class="login-feature-icon">📊</div><span>TOEIC 新制單字分類</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="main-app" style="display:none">
+  <div class="nav-bar">
+    <div class="nav-logo">TOEIC<span>Pro</span></div>
+    <div class="nav-actions">
+      <div class="streak-badge">🔥 <span id="streak-num">1</span> 天</div>
+      <div class="user-avatar-placeholder" id="user-avatar" onclick="switchTab('profile')">?</div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="home-header">
+      <div class="greeting" id="greeting">歡迎回來 👋</div>
+      <div class="user-title">你是 <span id="user-title-text">初學者</span></div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-top">
+          <div class="level-badge">Lv.<span id="user-level">1</span></div>
+          <div class="xp-text"><span id="cur-xp">0</span> / <span id="max-xp">100</span> XP</div>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="home-cards">
+      <div class="sync-badge">☁️ 已連線 Firebase，資料自動同步中</div>
+      <div class="reward-card">
+        <div class="reward-icon">🎁</div>
+        <div class="reward-text">
+          <h3>每日登入獎勵</h3>
+          <p id="reward-desc">今天還沒領取！+15 XP</p>
+        </div>
+        <button class="reward-btn" id="reward-btn" onclick="claimReward()">領取</button>
+      </div>
+      <div class="progress-card">
+        <div class="progress-card-top">
+          <h3>今日進度</h3>
+          <div class="progress-pct" id="today-pct">0%</div>
+        </div>
+        <div class="progress-sections">
+          <div class="progress-seg"><div class="num" id="today-learned">0</div><div class="lbl">已學</div></div>
+          <div class="progress-seg"><div class="num" id="today-goal">10</div><div class="lbl">目標</div></div>
+          <div class="progress-seg"><div class="num" id="today-correct">0</div><div class="lbl">答對</div></div>
+        </div>
+      </div>
+      <div class="progress-card" style="cursor:pointer" onclick="switchTab('quiz')">
+        <div class="progress-card-top"><h3>🎮 快速測驗</h3><span style="color:var(--gray-400)">→</span></div>
+        <div style="font-size:12px;color:var(--gray-400)">隨機抽取單字，測試你的記憶力</div>
+      </div>
+      <div class="progress-card" style="cursor:pointer" onclick="switchTab('review')">
+        <div class="progress-card-top">
+          <h3>📖 錯題複習</h3>
+          <div style="background:var(--red-light);color:var(--red);border-radius:8px;padding:2px 8px;font-size:12px;font-family:var(--font-en);font-weight:700" id="wrong-count-badge">0</div>
+        </div>
+        <div style="font-size:12px;color:var(--gray-400)">針對答錯的單字加強練習</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="page" id="page-map">
+    <div class="map-container">
+      <div class="map-title">學習地圖</div>
+      <div class="map-sub" id="map-position-text">第 1 天 · 第 1 關</div>
+      <div id="map-content"></div>
+    </div>
+  </div>
+
+  <!-- STUDY -->
+  <div class="page" id="page-study">
+    <div class="cat-grid" id="cat-list-view">
+      <div class="section-title">選擇分類</div>
+      <div class="section-sub">選擇你想練習的主題單字</div>
+      <div class="cat-cards" id="cat-cards-container"></div>
+    </div>
+    <div id="study-view" style="display:none">
+      <div class="study-header">
+        <div class="study-header-top">
+          <button class="back-btn" onclick="backToCategories()">← 返回</button>
+          <div class="study-cat-title" id="study-cat-title"></div>
+        </div>
+        <div class="study-progress"><div class="study-prog-fill" id="study-prog-fill" style="width:0%"></div></div>
+      </div>
+      <div class="flashcard-area">
+        <div class="card-count" id="card-count-text"></div>
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="tag" id="fc-tag"></div>
+          <div class="word" id="fc-word"></div>
+          <div class="phonetic" id="fc-phonetic"></div>
+          <div class="meaning" id="fc-meaning"></div>
+          <div class="example" id="fc-example"></div>
+          <div class="tap-hint">點擊翻牌查看意思</div>
+        </div>
+        <div class="rating-btns-label">你記得這個單字嗎？</div>
+        <div class="rating-btns">
+          <button class="rating-btn no" onclick="rateCard(0)">😵 不會</button>
+          <button class="rating-btn so" onclick="rateCard(1)">🤔 有點會</button>
+          <button class="rating-btn yes" onclick="rateCard(2)">✅ 會了</button>
+        </div>
+      </div>
+    </div>
+    <div id="study-result-view" style="display:none" class="result-screen"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="page" id="page-quiz">
+    <div id="quiz-main-view">
+      <div class="quiz-header">
+        <div class="quiz-q-num" id="quiz-q-num">題目 1 / 10</div>
+        <div class="quiz-word" id="quiz-word"></div>
+        <div class="quiz-phonetic" id="quiz-phonetic"></div>
+      </div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <div style="padding:0 16px 16px">
+        <button class="quiz-next-btn" id="quiz-next-btn" onclick="nextQuizQ()" style="display:none">下一題 →</button>
+      </div>
+    </div>
+    <div id="quiz-result-view" style="display:none" class="result-screen"></div>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="page" id="page-review">
+    <div class="review-container">
+      <div class="section-title">錯題本</div>
+      <div class="section-sub">這些單字你答錯過，加油複習！</div>
+      <div id="review-content"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="page" id="page-profile">
+    <div class="settings-container">
+      <div class="settings-section">
+        <h3>帳號</h3>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="sr-icon">👤</div>
+            <div class="sr-label" id="profile-name">載入中...</div>
+          </div>
+          <div class="settings-row">
+            <div class="sr-icon">✉️</div>
+            <div class="sr-label" id="profile-email" style="font-size:12px;color:var(--gray-400)">載入中...</div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>每日設定</h3>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="sr-icon">🎯</div>
+            <div class="sr-label">每日目標單字數</div>
+            <input type="number" class="settings-input" id="goal-input" value="10" min="5" max="50" onchange="updateGoal(this.value)">
+          </div>
+          <div class="settings-row">
+            <div class="sr-icon">🔔</div>
+            <div class="sr-label">LINE 提醒時間</div>
+            <input type="time" class="settings-input" id="remind-time" value="20:00" onchange="updateRemind(this.value)">
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>新增自訂單字</h3>
+        <div class="add-word-form">
+          <div class="form-row">
+            <div class="form-group"><label>英文單字</label><input type="text" id="add-word" placeholder="e.g. negotiate"></div>
+            <div class="form-group"><label>音標</label><input type="text" id="add-phonetic" placeholder="e.g. /nɪˈɡoʊʃieɪt/"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>中文意思</label><input type="text" id="add-meaning" placeholder="e.g. 協商、談判"></div>
+            <div class="form-group"><label>分類</label>
+              <select id="add-cat">
+                <option value="business">🏢 商務辦公</option>
+                <option value="travel">✈️ 旅遊交通</option>
+                <option value="shopping">🛒 購物消費</option>
+                <option value="health">🏥 醫療健康</option>
+                <option value="daily">🏠 生活日常</option>
+                <option value="hr">💼 人力資源</option>
+                <option value="finance">📊 財務金融</option>
+                <option value="logistics">🏭 製造物流</option>
+                <option value="marketing">📢 行銷廣告</option>
+                <option value="tech">🖥️ 科技資訊</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>例句（選填）</label><textarea id="add-example" placeholder="e.g. We need to negotiate the contract terms."></textarea></div>
+          <button class="submit-btn" onclick="addCustomWord()">+ 新增單字</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>稱號收集</h3>
+        <div class="titles-grid" id="titles-grid"></div>
+      </div>
+      <div class="settings-section">
+        <button class="logout-btn" onclick="signOut()">登出</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>首頁
+    </button>
+    <button class="tab-btn" id="tab-map" onclick="switchTab('map')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>地圖
+    </button>
+    <button class="tab-btn" id="tab-study" onclick="switchTab('study')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>學習
+    </button>
+    <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>測驗
+    </button>
+    <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>設定
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCDOJLt0lrez-bjzIz4OFtPPL7leFsmvnM",
+  authDomain: "english-d245a.firebaseapp.com",
+  projectId: "english-d245a",
+  storageBucket: "english-d245a.firebasestorage.app",
+  messagingSenderId: "594568264113",
+  appId: "1:594568264113:web:fbe1192938f7e216326590"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ─── DATA ───────────────────────────────────────
+const WORDS = [
+  {id:1,word:"negotiate",phonetic:"/nɪˈɡoʊʃieɪt/",meaning:"協商、談判",example:"We need to negotiate the contract terms.",cat:"business"},
+  {id:2,word:"implement",phonetic:"/ˈɪmplɪment/",meaning:"實施、執行",example:"The company will implement new policies.",cat:"business"},
+  {id:3,word:"allocate",phonetic:"/ˈæləkeɪt/",meaning:"分配、撥出",example:"We need to allocate resources carefully.",cat:"finance"},
+  {id:4,word:"itinerary",phonetic:"/aɪˈtɪnəreri/",meaning:"行程表、旅遊路線",example:"Please review the travel itinerary.",cat:"travel"},
+  {id:5,word:"reimburse",phonetic:"/ˌriːɪmˈbɜːrs/",meaning:"報銷、退款",example:"Submit receipts to get reimbursed.",cat:"finance"},
+  {id:6,word:"collaborate",phonetic:"/kəˈlæbəreɪt/",meaning:"合作、協作",example:"Teams collaborate across departments.",cat:"business"},
+  {id:7,word:"accommodate",phonetic:"/əˈkɒmədeɪt/",meaning:"容納、提供住宿",example:"The hotel can accommodate 200 guests.",cat:"travel"},
+  {id:8,word:"inventory",phonetic:"/ˈɪnvəntɔːri/",meaning:"庫存、存貨清單",example:"Check the inventory levels weekly.",cat:"logistics"},
+  {id:9,word:"procurement",phonetic:"/prəˈkjʊərmənt/",meaning:"採購",example:"The procurement team handles vendors.",cat:"business"},
+  {id:10,word:"surplus",phonetic:"/ˈsɜːrpləs/",meaning:"剩餘、盈餘",example:"There is a budget surplus this year.",cat:"finance"},
+  {id:11,word:"confidential",phonetic:"/ˌkɒnfɪˈdenʃəl/",meaning:"機密的",example:"This is confidential information.",cat:"business"},
+  {id:12,word:"subsidiary",phonetic:"/səbˈsɪdiəri/",meaning:"子公司",example:"They opened a subsidiary in Tokyo.",cat:"business"},
+  {id:13,word:"pharmaceutical",phonetic:"/ˌfɑːrməˈsuːtɪkəl/",meaning:"藥品的、製藥的",example:"The pharmaceutical industry is growing.",cat:"health"},
+  {id:14,word:"infrastructure",phonetic:"/ˈɪnfrəstrʌktʃər/",meaning:"基礎設施",example:"The city improved its infrastructure.",cat:"tech"},
+  {id:15,word:"merchandise",phonetic:"/ˈmɜːrtʃəndaɪz/",meaning:"商品、貨物",example:"The store displays new merchandise.",cat:"shopping"},
+  {id:16,word:"recruitment",phonetic:"/rɪˈkruːtmənt/",meaning:"招募、招聘",example:"Recruitment efforts increased this year.",cat:"hr"},
+  {id:17,word:"warranty",phonetic:"/ˈwɒrənti/",meaning:"保固、保證書",example:"The product comes with a 2-year warranty.",cat:"shopping"},
+  {id:18,word:"logistics",phonetic:"/ləˈdʒɪstɪks/",meaning:"物流",example:"Efficient logistics reduce delivery time.",cat:"logistics"},
+  {id:19,word:"campaign",phonetic:"/kæmˈpeɪn/",meaning:"行銷活動、宣傳活動",example:"The marketing campaign was successful.",cat:"marketing"},
+  {id:20,word:"demographic",phonetic:"/ˌdeməˈɡræfɪk/",meaning:"人口統計的、目標族群",example:"We analyzed the target demographic.",cat:"marketing"},
+  {id:21,word:"fluctuate",phonetic:"/ˈflʌktʃueɪt/",meaning:"波動、起伏",example:"Stock prices fluctuate daily.",cat:"finance"},
+  {id:22,word:"diagnose",phonetic:"/ˈdaɪəɡnoʊz/",meaning:"診斷",example:"The doctor diagnosed the condition.",cat:"health"},
+  {id:23,word:"prescription",phonetic:"/prɪˈskrɪpʃən/",meaning:"處方、藥方",example:"You need a prescription for this medicine.",cat:"health"},
+  {id:24,word:"sustainable",phonetic:"/səˈsteɪnəbl/",meaning:"永續的、可持續的",example:"Sustainable practices benefit the environment.",cat:"business"},
+  {id:25,word:"franchise",phonetic:"/ˈfræntʃaɪz/",meaning:"特許經營、連鎖加盟",example:"They opened a franchise in the city.",cat:"business"},
+  {id:26,word:"reimbursement",phonetic:"/ˌriːɪmˈbɜːrsmənt/",meaning:"費用報銷",example:"Submit your reimbursement form by Friday.",cat:"finance"},
+  {id:27,word:"venue",phonetic:"/ˈvenjuː/",meaning:"場地、舉辦地點",example:"The venue was booked for the conference.",cat:"travel"},
+  {id:28,word:"agenda",phonetic:"/əˈdʒendə/",meaning:"議程、待辦事項",example:"Please review the meeting agenda.",cat:"business"},
+  {id:29,word:"deadline",phonetic:"/ˈdedlaɪn/",meaning:"截止日期",example:"The deadline for submissions is Friday.",cat:"business"},
+  {id:30,word:"shipment",phonetic:"/ˈʃɪpmənt/",meaning:"貨運、出貨",example:"The shipment arrived two days late.",cat:"logistics"},
+];
+
+const CATS = {
+  business:{name:"商務辦公",icon:"🏢"},travel:{name:"旅遊交通",icon:"✈️"},
+  shopping:{name:"購物消費",icon:"🛒"},health:{name:"醫療健康",icon:"🏥"},
+  daily:{name:"生活日常",icon:"🏠"},hr:{name:"人力資源",icon:"💼"},
+  finance:{name:"財務金融",icon:"📊"},logistics:{name:"製造物流",icon:"🏭"},
+  marketing:{name:"行銷廣告",icon:"📢"},tech:{name:"科技資訊",icon:"🖥️"}
+};
+
+const TITLES = [
+  {name:"初學者",icon:"🌱",req:"Lv.1",level:1},
+  {name:"努力學習",icon:"📖",req:"Lv.3",level:3},
+  {name:"單字達人",icon:"⚡",req:"Lv.5",level:5},
+  {name:"TOEIC 新星",icon:"⭐",req:"Lv.8",level:8},
+  {name:"語言獵人",icon:"🏹",req:"Lv.12",level:12},
+  {name:"英語王者",icon:"👑",req:"Lv.20",level:20},
+];
+
+const XP_PER_LEVEL = [0,100,250,450,700,1000,1350,1750,2200,2700,3250,3850,4500];
+
+// ─── STATE ──────────────────────────────────────
+let currentUser = null;
+let userState = {
+  xp:0, streak:1, lastLogin:null, todayLearned:0, todayCorrect:0,
+  goal:10, wrongWords:[], customWords:[], learnedWords:[],
+  remindTime:"20:00", mapDay:1, mapStage:1
+};
+
+// ─── FIREBASE HELPERS ───────────────────────────
+async function loadUserData(uid) {
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    userState = { ...userState, ...snap.data() };
+  } else {
+    await setDoc(ref, userState);
+  }
+}
+
+async function saveUserData() {
+  if (!currentUser) return;
+  const ref = doc(db, "users", currentUser.uid);
+  await setDoc(ref, userState, { merge: true });
+}
+
+// ─── AUTH ────────────────────────────────────────
+window.signInWithGoogle = async function() {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) {
+    showToast("登入失敗，請再試一次");
+  }
+};
+
+window.signOut = async function() {
+  await fbSignOut(auth);
+};
+
+onAuthStateChanged(auth, async (user) => {
+  document.getElementById('loading').style.display = 'none';
+  if (user) {
+    currentUser = user;
+    await loadUserData(user.uid);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('main-app').style.flexDirection = 'column';
+
+    // set avatar
+    const av = document.getElementById('user-avatar');
+    if (user.photoURL) {
+      av.innerHTML = `<img src="${user.photoURL}" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--teal-mid)">`;
+    } else {
+      av.textContent = (user.displayName||'U')[0].toUpperCase();
+    }
+
+    document.getElementById('greeting').textContent = `嗨，${user.displayName?.split(' ')[0] || '同學'} 👋`;
+    document.getElementById('profile-name').textContent = user.displayName || '使用者';
+    document.getElementById('profile-email').textContent = user.email || '';
+
+    checkDailyReset();
+    updateHomeUI();
+    renderProfile();
+  } else {
+    currentUser = null;
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('main-app').style.display = 'none';
+  }
+});
+
+// ─── DAILY RESET ────────────────────────────────
+function checkDailyReset() {
+  const today = new Date().toDateString();
+  if (userState.lastActiveDate !== today) {
+    userState.todayLearned = 0;
+    userState.todayCorrect = 0;
+    userState.lastActiveDate = today;
+    saveUserData();
+  }
+}
+
+// ─── XP & LEVEL ─────────────────────────────────
+function getLevel(xp) {
+  for (let i = XP_PER_LEVEL.length-1; i >= 0; i--) { if (xp >= XP_PER_LEVEL[i]) return i+1; }
+  return 1;
+}
+function getLevelXP(xp) {
+  const lv = getLevel(xp);
+  const cur = XP_PER_LEVEL[lv-1]||0;
+  const next = XP_PER_LEVEL[lv]||XP_PER_LEVEL[XP_PER_LEVEL.length-1]+500;
+  return { cur: xp-cur, max: next-cur, pct: Math.round((xp-cur)/(next-cur)*100) };
+}
+function getTitle(lv) {
+  let t = TITLES[0];
+  for (const ti of TITLES) { if (lv >= ti.level) t = ti; }
+  return t;
+}
+async function addXP(amount) {
+  const oldLv = getLevel(userState.xp);
+  userState.xp += amount;
+  const newLv = getLevel(userState.xp);
+  await saveUserData();
+  updateHomeUI();
+  showToast(`+${amount} XP 🎉`);
+  if (newLv > oldLv) setTimeout(() => showToast(`🏆 升級！現在是 Lv.${newLv} ${getTitle(newLv).icon}`), 1200);
+}
+
+function updateHomeUI() {
+  const lv = getLevel(userState.xp);
+  const lvxp = getLevelXP(userState.xp);
+  const title = getTitle(lv);
+  document.getElementById('user-level').textContent = lv;
+  document.getElementById('user-title-text').textContent = title.icon + ' ' + title.name;
+  document.getElementById('cur-xp').textContent = lvxp.cur;
+  document.getElementById('max-xp').textContent = lvxp.max;
+  document.getElementById('xp-fill').style.width = lvxp.pct + '%';
+  document.getElementById('streak-num').textContent = userState.streak || 1;
+  document.getElementById('today-goal').textContent = userState.goal || 10;
+  document.getElementById('today-learned').textContent = userState.todayLearned || 0;
+  document.getElementById('today-correct').textContent = userState.todayCorrect || 0;
+  const pct = Math.min(100, Math.round((userState.todayLearned||0) / (userState.goal||10) * 100));
+  document.getElementById('today-pct').textContent = pct + '%';
+  document.getElementById('wrong-count-badge').textContent = (userState.wrongWords||[]).length;
+  const today = new Date().toDateString();
+  const btn = document.getElementById('reward-btn');
+  if (userState.lastLogin === today) {
+    btn.disabled = true;
+    document.getElementById('reward-desc').textContent = '今天已領取 ✓';
+  } else {
+    btn.disabled = false;
+    document.getElementById('reward-desc').textContent = '今天還沒領取！+15 XP';
+  }
+}
+
+window.claimReward = async function() {
+  const today = new Date().toDateString();
+  if (userState.lastLogin === today) return;
+  if (userState.lastLogin === new Date(Date.now()-86400000).toDateString()) {
+    userState.streak = (userState.streak||1) + 1;
+  } else {
+    userState.streak = 1;
+  }
+  userState.lastLogin = today;
+  await saveUserData();
+  addXP(15);
+};
+
+// ─── TABS ────────────────────────────────────────
+window.switchTab = function(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab==='map') renderMap();
+  if (tab==='study') renderCategories();
+  if (tab==='quiz') initQuiz();
+  if (tab==='review') renderReview();
+  if (tab==='profile') renderProfile();
+};
+
+// ─── MAP ─────────────────────────────────────────
+function renderMap() {
+  const allWords = [...WORDS, ...(userState.customWords||[])];
+  const stagesPerDay = 5;
+  const days = Math.ceil(allWords.length / stagesPerDay);
+  let html = '';
+  for (let d = 1; d <= Math.min(days, 6); d++) {
+    html += `<div class="day-row"><div class="day-label">Day ${d}</div><div class="stages">`;
+    for (let st = 1; st <= stagesPerDay; st++) {
+      const isDone = (userState.mapDay>d)||(userState.mapDay===d&&userState.mapStage>st);
+      const isCur = userState.mapDay===d && userState.mapStage===st;
+      const cls = isDone ? 'done' : isCur ? 'current' : 'locked';
+      const icon = isDone ? '✅' : isCur ? '▶️' : '🔒';
+      html += `<div class="stage ${cls}"><span>${icon}</span><div class="stage-num">S${st}</div></div>`;
+    }
+    html += '</div>';
+    if (d < Math.min(days, 6)) {
+      const dayProgress = userState.mapDay>d ? 100 : userState.mapDay===d ? Math.round((userState.mapStage-1)/stagesPerDay*100) : 0;
+      html += `<div class="path-connector"><div class="fill" style="width:${dayProgress}%"></div></div>`;
+    }
+    html += '</div>';
+  }
+  document.getElementById('map-content').innerHTML = html;
+  document.getElementById('map-position-text').textContent = `第 ${userState.mapDay} 天 · 第 ${userState.mapStage} 關`;
+}
+
+// ─── STUDY ───────────────────────────────────────
+function renderCategories() {
+  const allWords = [...WORDS, ...(userState.customWords||[])];
+  let html = '';
+  for (const [key, cat] of Object.entries(CATS)) {
+    const words = allWords.filter(w => w.cat === key);
+    if (!words.length) continue;
+    const learned = words.filter(w => (userState.learnedWords||[]).includes(w.id)).length;
+    const pct = Math.round(learned/words.length*100);
+    html += `<div class="cat-card" onclick="startStudy('${key}')">
+      <div class="cat-icon">${cat.icon}</div>
+      <h4>${cat.name}</h4>
+      <p>${words.length} 個單字 · ${pct}% 完成</p>
+      <div class="cat-prog"><div class="cat-prog-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }
+  document.getElementById('cat-cards-container').innerHTML = html;
+}
+
+let studyWords=[], studyIdx=0, studyCat='';
+window.startStudy = function(cat) {
+  const allWords = [...WORDS, ...(userState.customWords||[])];
+  studyWords = allWords.filter(w => w.cat === cat);
+  studyIdx = 0; studyCat = cat;
+  document.getElementById('cat-list-view').style.display = 'none';
+  document.getElementById('study-view').style.display = 'block';
+  document.getElementById('study-result-view').style.display = 'none';
+  document.getElementById('study-cat-title').textContent = CATS[cat]?.icon + ' ' + CATS[cat]?.name;
+  showStudyCard();
+};
+
+window.backToCategories = function() {
+  document.getElementById('cat-list-view').style.display = 'block';
+  document.getElementById('study-view').style.display = 'none';
+  document.getElementById('study-result-view').style.display = 'none';
+};
+
+function showStudyCard() {
+  if (studyIdx >= studyWords.length) { showStudyResult(); return; }
+  const w = studyWords[studyIdx];
+  document.getElementById('card-count-text').textContent = `${studyIdx+1} / ${studyWords.length}`;
+  document.getElementById('study-prog-fill').style.width = `${studyIdx/studyWords.length*100}%`;
+  document.getElementById('fc-tag').textContent = CATS[w.cat]?.name || w.cat;
+  document.getElementById('fc-word').textContent = w.word;
+  document.getElementById('fc-phonetic').textContent = w.phonetic || '';
+  document.getElementById('fc-meaning').textContent = w.meaning;
+  document.getElementById('fc-example').textContent = w.example || '';
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+window.flipCard = function() { document.getElementById('flashcard').classList.toggle('flipped'); };
+
+window.rateCard = async function(score) {
+  const w = studyWords[studyIdx];
+  if (!userState.learnedWords) userState.learnedWords = [];
+  if (!userState.learnedWords.includes(w.id)) userState.learnedWords.push(w.id);
+  userState.todayLearned = (userState.todayLearned||0) + 1;
+  if (score === 0) {
+    if (!userState.wrongWords) userState.wrongWords = [];
+    if (!userState.wrongWords.find(x => x.id===w.id)) userState.wrongWords.push(w);
+  }
+  const xpGain = score===0 ? 2 : score===1 ? 4 : 7;
+  userState.xp = (userState.xp||0) + xpGain;
+  await saveUserData();
+  studyIdx++;
+  showStudyCard();
+  updateHomeUI();
+};
+
+function showStudyResult() {
+  document.getElementById('study-view').style.display = 'none';
+  const rv = document.getElementById('study-result-view');
+  rv.style.display = 'block';
+  rv.innerHTML = `<div class="result-icon">🎊</div>
+    <div class="result-title">完成！</div>
+    <div class="result-sub">${CATS[studyCat]?.name} 學習完畢</div>
+    <div class="result-stats">
+      <div class="result-stat"><div class="rs-num">${studyWords.length}</div><div class="rs-lbl">已學單字</div></div>
+      <div class="result-stat"><div class="rs-num">+${studyWords.length*4}</div><div class="rs-lbl">獲得 XP</div></div>
+      <div class="result-stat"><div class="rs-num">Lv.${getLevel(userState.xp)}</div><div class="rs-lbl">目前等級</div></div>
+    </div>
+    <button class="result-btn" onclick="backToCategories()">繼續學習</button>
+    <button class="result-btn secondary" onclick="switchTab('home')">回首頁</button>`;
+}
+
+// ─── QUIZ ─────────────────────────────────────────
+let quizWords=[], quizIdx=0, quizScore=0, quizAnswered=false;
+function initQuiz() {
+  const allWords = [...WORDS, ...(userState.customWords||[])];
+  quizWords = allWords.sort(()=>Math.random()-.5).slice(0, 10);
+  quizIdx = 0; quizScore = 0; quizAnswered = false;
+  document.getElementById('quiz-main-view').style.display = 'block';
+  document.getElementById('quiz-result-view').style.display = 'none';
+  showQuizQ();
+}
+
+function showQuizQ() {
+  if (quizIdx >= quizWords.length) { showQuizResult(); return; }
+  quizAnswered = false;
+  const allWords = [...WORDS, ...(userState.customWords||[])];
+  const w = quizWords[quizIdx];
+  document.getElementById('quiz-q-num').textContent = `題目 ${quizIdx+1} / ${quizWords.length}`;
+  document.getElementById('quiz-word').textContent = w.word;
+  document.getElementById('quiz-phonetic').textContent = w.phonetic || '';
+  const wrong = allWords.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3);
+  const opts = [w, ...wrong].sort(()=>Math.random()-.5);
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-options').innerHTML = opts.map((o,i) =>
+    `<div class="quiz-opt" onclick="answerQuiz(this,'${o.meaning.replace(/'/g,"\\'")}','${w.meaning.replace(/'/g,"\\'")}',${o.id===w.id})">
+      <div class="opt-letter">${letters[i]}</div>${o.meaning}
+    </div>`).join('');
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+}
+
+window.answerQuiz = async function(el, chosen, correct, isCorrect) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const w = quizWords[quizIdx];
+  document.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+  if (isCorrect) {
+    el.classList.add('correct');
+    quizScore++;
+    userState.todayCorrect = (userState.todayCorrect||0) + 1;
+    userState.xp = (userState.xp||0) + 10;
+    document.getElementById('quiz-feedback').style.display = 'block';
+    document.getElementById('quiz-feedback').innerHTML = `<div class="quiz-feedback-card correct">✅ 答對了！<br><small>${w.word} = ${w.meaning}</small></div>`;
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt').forEach(o => { if (o.textContent.includes(correct)) o.classList.add('correct'); });
+    if (!userState.wrongWords) userState.wrongWords = [];
+    if (!userState.wrongWords.find(x => x.id===w.id)) userState.wrongWords.push(w);
+    document.getElementById('quiz-feedback').style.display = 'block';
+    document.getElementById('quiz-feedback').innerHTML = `<div class="quiz-feedback-card wrong">❌ 答錯了！<br><small>正確答案：${correct}</small></div>`;
+  }
+  await saveUserData();
+  updateHomeUI();
+  document.getElementById('quiz-next-btn').style.display = 'block';
+};
+
+window.nextQuizQ = function() { quizIdx++; showQuizQ(); };
+
+function showQuizResult() {
+  document.getElementById('quiz-main-view').style.display = 'none';
+  const rv = document.getElementById('quiz-result-view');
+  rv.style.display = 'block';
+  const acc = Math.round(quizScore/quizWords.length*100);
+  rv.innerHTML = `<div class="result-icon">${acc>=80?'🏆':acc>=60?'👍':'📚'}</div>
+    <div class="result-title">${acc>=80?'太棒了！':acc>=60?'不錯！':'繼續加油！'}</div>
+    <div class="result-sub">本次測驗結果</div>
+    <div class="result-stats">
+      <div class="result-stat"><div class="rs-num">${quizScore}/${quizWords.length}</div><div class="rs-lbl">答對題數</div></div>
+      <div class="result-stat"><div class="rs-num">${acc}%</div><div class="rs-lbl">正確率</div></div>
+      <div class="result-stat"><div class="rs-num">+${quizScore*10}</div><div class="rs-lbl">獲得 XP</div></div>
+    </div>
+    <button class="result-btn" onclick="initQuiz()">再來一次</button>
+    <button class="result-btn secondary" onclick="switchTab('home')">回首頁</button>`;
+}
+
+// ─── REVIEW ──────────────────────────────────────
+function renderReview() {
+  const wrong = userState.wrongWords || [];
+  const container = document.getElementById('review-content');
+  if (!wrong.length) {
+    container.innerHTML = `<div class="review-empty"><span>✅</span><div style="font-size:15px;font-weight:700;color:var(--gray-800);margin-bottom:4px">沒有錯題！</div><div>繼續保持，太厲害了！</div></div>`;
+    return;
+  }
+  container.innerHTML = wrong.map(w => `
+    <div class="review-word-card">
+      <div><div class="rw-word">${w.word}</div><div class="rw-meaning">${w.meaning}</div></div>
+      <div class="rw-count" onclick="removeWrong(${w.id})">✓ 移除</div>
+    </div>`).join('');
+}
+
+window.removeWrong = async function(id) {
+  userState.wrongWords = (userState.wrongWords||[]).filter(w => w.id !== id);
+  await saveUserData();
+  renderReview();
+  updateHomeUI();
+  showToast('已從錯題本移除');
+};
+
+// ─── PROFILE ─────────────────────────────────────
+function renderProfile() {
+  const lv = getLevel(userState.xp);
+  document.getElementById('goal-input').value = userState.goal || 10;
+  document.getElementById('remind-time').value = userState.remindTime || '20:00';
+  const titlesHtml = TITLES.map(t => `
+    <div class="title-card ${lv>=t.level?'unlocked':'locked'}">
+      <div class="t-icon">${t.icon}</div>
+      <div class="t-name">${t.name}</div>
+      <div class="t-req">${t.req}</div>
+    </div>`).join('');
+  document.getElementById('titles-grid').innerHTML = titlesHtml;
+}
+
+window.updateGoal = async function(v) {
+  userState.goal = parseInt(v)||10;
+  await saveUserData();
+  updateHomeUI();
+  showToast('每日目標已更新');
+};
+
+window.updateRemind = async function(v) {
+  userState.remindTime = v;
+  await saveUserData();
+  showToast('提醒時間已儲存');
+};
+
+window.addCustomWord = async function() {
+  const word = document.getElementById('add-word').value.trim();
+  const meaning = document.getElementById('add-meaning').value.trim();
+  if (!word || !meaning) { showToast('請至少填入單字和意思'); return; }
+  if (!userState.customWords) userState.customWords = [];
+  const id = Date.now();
+  userState.customWords.push({
+    id, word, meaning,
+    phonetic: document.getElementById('add-phonetic').value.trim(),
+    example: document.getElementById('add-example').value.trim(),
+    cat: document.getElementById('add-cat').value
+  });
+  await saveUserData();
+  document.getElementById('add-word').value = '';
+  document.getElementById('add-meaning').value = '';
+  document.getElementById('add-phonetic').value = '';
+  document.getElementById('add-example').value = '';
+  showToast(`已新增「${word}」🎉`);
+  renderCategories();
+};
+
+// ─── TOAST ───────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+window.showToast = showToast;
+
+</script>
+</body>
+</html>
