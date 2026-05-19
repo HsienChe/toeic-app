@@ -1,0 +1,25 @@
+name: LINE 每日學習提醒
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 每天台灣時間 20:00（UTC+8）
+  workflow_dispatch:        # 也可以手動觸發測試
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 發送 LINE 提醒
+        run: |
+          curl -X POST https://api.line.me/v2/bot/message/push \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}" \
+            -d '{
+              "to": "${{ secrets.LINE_USER_ID }}",
+              "messages": [
+                {
+                  "type": "text",
+                  "text": "📚 嗨車車！\n\n今天的 TOEIC 單字還沒完成喔！\n\n快去學習吧 💪\n👉 https://HsienChe.github.io/toeic-app"
+                }
+              ]
+            }'
