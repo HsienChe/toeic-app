@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>擊退英文單字怪獸！</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Firebase：背景非同步載入，不阻塞 React App -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCDOJLt0lrez-bjzIz4OFtPPL7leFsmvnM",
+      authDomain: "english-d245a.firebaseapp.com",
+      projectId: "english-d245a",
+      storageBucket: "english-d245a.firebasestorage.app",
+      messagingSenderId: "594568264113",
+      appId: "1:594568264113:web:fbe1192938f7e216326590"
+    };
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      window.db = db;
+      window.fbDoc = doc;
+      window.fbSetDoc = setDoc;
+      window.fbGetDoc = getDoc;
+
+      window.signInWithGoogle = async () => {
+        const provider = new GoogleAuthProvider();
+        try { await signInWithPopup(auth, provider); }
+        catch (e) { console.warn('Google sign-in failed', e); }
+      };
+
+      window.doSignOut = async () => {
+        await fbSignOut(auth);
+        window.currentUser = null;
+        window.dispatchEvent(new CustomEvent('authStateChanged', { detail: null }));
+      };
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          window.currentUser = user;
+          // Sync from Firestore → React state via custom event
+          try {
+            const snap = await getDoc(doc(db, 'users', user.uid));
+            const data = snap.exists() ? snap.data() : null;
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: user }));
+            if (data) window.dispatchEvent(new CustomEvent('firestoreSync', { detail: data }));
+            else await setDoc(doc(db, 'users', user.uid), {}, { merge: true });
+          } catch (e) {
+            window.dispatchEvent(new CustomEvent('authStateChanged', { detail: user }));
+          }
+        } else {
+          window.currentUser = null;
+          window.dispatchEvent(new CustomEvent('authStateChanged', { detail: null }));
+        }
+      });
+    } catch (e) {
+      console.warn('Firebase 載入失敗，使用本地模式', e);
+    }
+  </script>
+</body>
+</html>
