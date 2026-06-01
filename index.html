@@ -13,7 +13,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyCDOJLt0lrez-bjzIz4OFtPPL7leFsmvnM",
@@ -33,6 +34,24 @@
       window.fbDoc = doc;
       window.fbSetDoc = setDoc;
       window.fbGetDoc = getDoc;
+      window.fbCollection = collection;
+      window.fbGetDocs = getDocs;
+
+      // 讀取 wordBank 存到 window
+getDocs(collection(db, 'wordBank')).then(snapshot => {
+  window.wordBankData = snapshot.docs.map((doc, i) => ({
+    id: 10000 + i,
+    word: doc.data().word,
+    meaning: doc.data().translation,
+    phonetic: '',
+    example: '',
+    cat: 'business',
+    country: 'us',
+    monster: 'book',
+    day: 1,
+  }));
+ window.dispatchEvent(new CustomEvent('wordBankReady'));
+});
 
       window.signInWithGoogle = async () => {
         const provider = new GoogleAuthProvider();
