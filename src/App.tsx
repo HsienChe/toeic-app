@@ -38,11 +38,7 @@ export default function App() {
 
   useEffect(() => {
     const data = (window as any).wordBankData;
-    console.log('useEffect wordBankData:', data?.length);
-    if (data?.length > 0) {
-      setWordBankWords(data);
-      return;
-    }
+    if (data?.length > 0) { setWordBankWords(data); return; }
     const handler = () => setWordBankWords((window as any).wordBankData || []);
     window.addEventListener('wordBankReady', handler, { once: true });
     return () => window.removeEventListener('wordBankReady', handler);
@@ -116,9 +112,10 @@ export default function App() {
     await updateState({ todayKilled: (state.todayKilled || 0) + 1 });
     if (battleIsDaily) { await markDailyDone(); showToast('🎉 今日任務完成！獲得 +' + xpGained + ' EXP'); }
     else if (battleFromReview) {
-      if (battlePreloadedWords?.length > 0) {
+      if (battlePreloadedWords && battlePreloadedWords.length > 0) {
         const selectedIds = new Set(battlePreloadedWords.map(w => w.id));
-        await updateState({ wrongWords: (state.wrongWords || []).filter(w => !selectedIds.has(w.id)) });
+        const newWrongWords = (state.wrongWords || []).filter(w => !selectedIds.has(w.id));
+        await updateState({ wrongWords: newWrongWords });
         showToast(`🎉 太棒了！已移除 ${battlePreloadedWords.length} 個單詞 🚀`);
       }
     } else {
