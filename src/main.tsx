@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from '../App';
+import App from './App';
 import { ToastProvider } from './hooks/useToast';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -11,3 +11,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </ToastProvider>
   </React.StrictMode>
 );
+

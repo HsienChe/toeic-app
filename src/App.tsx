@@ -154,8 +154,9 @@ export default function App() {
     <div className="app" style={{ display: 'flex', flexDirection: 'column' }}>
       <Navbar streak={state.streak || 1} level={level} user={user} onAvatarClick={() => setActiveTab('settings')} />
       <div style={{ flex: 1, overflowY: 'auto' }}>
+        {activeTab === 'map' && <MapPage customWords={state.customWords || []} wordBankWords={wordBankWords} state={state} onSelectAccent={handleSelectAccent} />
+        }
         {activeTab === 'home' && <HomePage state={state} isDailyDone={dailyDone} onClaim={handleClaim} onSwitchTab={setActiveTab} />}
-        {activeTab === 'map' && <MapPage customWords={state.customWords || []} state={state} onSelectAccent={handleSelectAccent} />}
         {activeTab === 'daily' && <DailyPage state={state} isDailyDone={dailyDone} onSwitchToHome={() => setActiveTab('home')} onSwitchToSettings={() => setActiveTab('settings')} onStartBattle={handleStartBattleFromDaily} />}
         {activeTab === 'glossary' && <GlossaryPage words={allWords} state={state} onToggleFluent={handleToggleFluent} />}
         {activeTab === 'review' && <ReviewPage wrongWords={state.wrongWords || []} onChallenge={handleStartBattleFromReview} onRemove={async (id) => { await removeWrongWord(id); showToast('已移除！繼續加油 💪'); }} />}
@@ -168,3 +169,8 @@ export default function App() {
     </div>
   );
 }
+
+
+
+
+
