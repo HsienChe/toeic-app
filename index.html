@@ -39,18 +39,25 @@
 
       // 讀取 wordBank 存到 window
 getDocs(collection(db, 'wordBank')).then(snapshot => {
-  window.wordBankData = snapshot.docs.map((doc, i) => ({
-    id: 10000 + i,
-    word: doc.data().word,
-    meaning: doc.data().translation,
-    phonetic: '',
-    example: '',
-    cat: 'business',
-    country: 'us',
-    monster: 'book',
-    day: 1,
-  }));
- window.dispatchEvent(new CustomEvent('wordBankReady'));
+  const monsterMap = {
+    business: 'book', finance: 'boss', hr: 'boss', tech: 'boss',
+    marketing: 'koala', travel: 'koala', health: 'koala', logistics: 'book',
+  };
+  window.wordBankData = snapshot.docs.map((doc, i) => {
+    const cat = doc.data().cat || 'business';
+    return {
+      id: 10000 + i,
+      word: doc.data().word,
+      meaning: doc.data().translation,
+      phonetic: '',
+      example: '',
+      cat: cat,
+      country: 'us',
+      monster: monsterMap[cat] || 'book',
+      day: 1,
+    };
+  });
+  window.dispatchEvent(new CustomEvent('wordBankReady'));
 });
 
       window.signInWithGoogle = async () => {
